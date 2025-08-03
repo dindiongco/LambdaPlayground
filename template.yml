@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: "AWS::Serverless-2016-10-31"
+Description: "Greeting API"
+
+Globals:
+  Function:
+    Runtime: java17 # Defines the Lambda Runtime
+    Timeout: 10 #
+    MemorySize: 512
+
+Resources:
+  GreetingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: GreetingFunction
+      Handler: handler.GreetingHandler::handleRequest
+      CodeUri: .
+      Role: arn:aws:iam::777380868856:role/LambdaFullAccessRole
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /greet
+            Method: get
+
+Outputs:
+  GreetingApi:
+    Description: "API Gateway endpoint URL for Prod stage for Greeting function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/greet/"
+  GreetingFunction:
+    Description: "Greeting Lambda Function ARN"
+    Value: !GetAtt GreetingFunction.Arn
